@@ -5,8 +5,8 @@
 #include "sc_fpu_lt_model.cpp"
 #elif defined(FPU_AT_MODEL)
 #include "sc_fpu_at_model.cpp"
-#elif defined(FPU_AC_MODEL)
-#include "sc_fpu_ac_model.cpp"
+#elif defined(FPU_CA_MODEL)
+#include "sc_fpu_ca_model.cpp"
 #else
 #error "No model specified"
 #endif // FPU_AT_MODEL
@@ -17,9 +17,22 @@
 
 int sc_main (int, char*[])
 {
-  float op_a, op_b, op_c;
+#ifndef FPU_AT_MODEL
+  float op_a;
+  float op_b;
+  float op_c;
+#else
+  sc_signal<float> op_a;
+  sc_signal<float> op_b;
+  sc_signal<float> op_c;
+#endif // FPU_AT_MODEL
 
   fpu_unit fpu("fpu");
+#ifdef FPU_AT_MODEL
+  fpu.op_a(op_a);
+  fpu.op_b(op_b);
+  fpu.op_c(op_c);
+#endif // FPU_AT_MODEL
 
 #ifndef FPU_PV_MODEL
   // Open VCD file
@@ -41,29 +54,61 @@ int sc_main (int, char*[])
   op_a = 5.5f;
   op_b = 5.3f;
 
+#ifndef FPU_AT_MODEL
   printf("ADD: op_a = %0.2f, op_b = %0.2f\n", op_a, op_b);
+#else
+  printf("ADD: op_a = %0.2f, op_b = %0.2f\n", op_a.read(), op_b.read());
+
+#endif // FPU_AT_MODEL
+
 #ifdef FPU_PV_MODEL
   fpu.add(op_a, op_b, op_c);
 #elif defined(FPU_LT_MODEL)
   fpu.add(op_a, op_b, &op_c);
   sc_start(5, SC_NS);
 #elif defined(FPU_AT_MODEL)
-#elif defined(FPU_AC_MODEL)
-#endif
-  printf("RESULT: op_c = %0.2f\n", op_c);
+  fpu.add();
+  sc_start(5, SC_NS);
+#elif defined(FPU_CA_MODEL)
+#endif // FPU_XX_MODEL
 
+#ifndef FPU_AT_MODEL
+  printf("RESULT: op_c = %0.2f\n", op_c);
+#else
+  cout << "@" << sc_time_stamp();
+  printf(" - RESULT: op_c = %0.2f\n", op_c.read());
+#endif // FPU_AT_MODEL
+
+#ifndef FPU_AT_MODEL
   printf("SUBS: op_a = %0.2f, op_b = %0.2f\n", op_a, op_b);
+#else
+  printf("SUBS: op_a = %0.2f, op_b = %0.2f\n", op_a.read(), op_b.read());
+#endif // FPU_AT_MODEL
+
 #ifdef FPU_PV_MODEL
   fpu.subs(op_a, op_b, op_c);
 #elif defined(FPU_LT_MODEL)
   fpu.subs(op_a, op_b, &op_c);
   sc_start(5, SC_NS);
 #elif defined(FPU_AT_MODEL)
-#elif defined(FPU_AC_MODEL)
-#endif
-  printf("RESULT: op_c = %0.2f\n", op_c);
+  fpu.subs();
+  sc_start(5, SC_NS);
+#elif defined(FPU_CA_MODEL)
+#endif // FPU_XX_MODEL
 
+#ifndef FPU_AT_MODEL
+  printf("RESULT: op_c = %0.2f\n", op_c);
+#else
+  cout << "@" << sc_time_stamp();
+  printf(" - RESULT: op_c = %0.2f\n", op_c.read());
+#endif // FPU_AT_MODEL
+
+#ifndef FPU_AT_MODEL
   printf("MULT: op_a = %0.2f, op_b = %0.2f\n", op_a, op_b);
+#else
+  printf("MULT: op_a = %0.2f, op_b = %0.2f\n", op_a.read(), op_b.read());
+#endif // FPU_AT_MODEL
+
   op_b = 10.0f;
 #ifdef FPU_PV_MODEL
   fpu.mult(op_a, op_b, op_c);
@@ -71,20 +116,40 @@ int sc_main (int, char*[])
   fpu.mult(op_a, op_b, &op_c);
   sc_start(5, SC_NS);
 #elif defined(FPU_AT_MODEL)
-#elif defined(FPU_AC_MODEL)
-#endif
-  printf("RESULT: op_c = %0.2f\n", op_c);
+  fpu.mult();
+  sc_start(5, SC_NS);
+#elif defined(FPU_CA_MODEL)
+#endif // FPU_XX_MODEL
 
+#ifndef FPU_AT_MODEL
+  printf("RESULT: op_c = %0.2f\n", op_c);
+#else
+  cout << "@" << sc_time_stamp();
+  printf(" - RESULT: op_c = %0.2f\n", op_c.read());
+#endif // FPU_AT_MODEL
+
+#ifndef FPU_AT_MODEL
   printf("DIV: op_a = %0.2f, op_b = %0.2f\n", op_a, op_b);
+#else
+  printf("DIV: op_a = %0.2f, op_b = %0.2f\n", op_a.read(), op_b.read());
+#endif // FPU_AT_MODEL
 #ifdef FPU_PV_MODEL
   fpu.div(op_a, op_b, op_c);
 #elif defined(FPU_LT_MODEL)
   fpu.div(op_a, op_b, &op_c);
   sc_start(5, SC_NS);
 #elif defined(FPU_AT_MODEL)
-#elif defined(FPU_AC_MODEL)
-#endif
+  fpu.div();
+  sc_start(5, SC_NS);
+#elif defined(FPU_CA_MODEL)
+#endif // FPU_XX_MODEL
+
+#ifndef FPU_AT_MODEL
   printf("RESULT: op_c = %0.2f\n", op_c);
+#else
+  cout << "@" << sc_time_stamp();
+  printf(" - RESULT: op_c = %0.2f\n", op_c.read());
+#endif // FPU_AT_MODEL
 
   cout << "@" << sc_time_stamp() << " Terminating simulation\n" << endl;
 
