@@ -1,0 +1,69 @@
+## Variable that points to SystemC installation path
+SYSTEMC = $(SYSTEMC_PATH)
+
+## Variable that points to SystemC-AMS installation path
+SYSTEMCAMS = $(SYSTEMC_AMS_PATH)
+
+
+ifndef TARGET_ARCH
+## select target architecture
+#TARGET_ARCH  = linux
+TARGET_ARCH = linux64
+#TARGET_ARCH = gccsparcOS5
+#TARGET_ARCH = cygwin
+#TARGET_ARCH = mingw32
+endif
+
+
+## if reguired adapt compiler options
+CC     = g++
+OPT    = -g -O3
+DEBUG  = -g
+OTHER  = -Wall
+CFLAGS = $(DEBUG) $(OTHER)
+
+###############################################################################
+######################### do not edit below this line #########################
+###############################################################################
+
+
+INCDIR = -I. -I$(SYSTEMC)/include -I$(SYSTEMCAMS)/include
+LIBDIR = -L$(SYSTEMC)/lib-$(TARGET_ARCH) -L$(SYSTEMCAMS)/lib-$(TARGET_ARCH)
+
+
+LIBS   =   $(EXTRA_LIBS) -lsystemc-ams -lsystemc -lm
+
+
+EXE    = $(SRCS_EXE:.cpp=.exe)
+OBJS   = $(SRCS:.cpp=.o)
+
+.SUFFIXES: .cc .cpp .o .exe
+
+all: $(OBJS) $(EXE)
+
+.cpp.exe:  
+	$(CC) $(CFLAGS) $(INCDIR) $(LIBDIR) $< -o $@ $(OBJS) $(LIBS) 2>&1 | c++filt
+
+.cpp.o:
+	rm -f $(EXE)
+	$(CC) $(CFLAGS) $(INCDIR) -c $<
+
+.cc.o:
+	rm -f $(EXE)
+	$(CC) $(CFLAGS) $(INCDIR) -c $<
+	
+clean:
+	rm -f $(OBJS) *~ $(EXE) core
+
+sim:
+	@$(MAKE) && ./$(EXE) $(ARGS)
+	
+ultraclean: clean
+	rm -f Makefile.deps
+
+Makefile.deps:
+	$(CC) $(CFLAGS) $(INCDIR) -M $(SRCS_EXE) $(SRCS) >> Makefile.deps
+
+include Makefile.deps
+
+

@@ -1,0 +1,49 @@
+SystemC AMS User's Guide examples
+---------------------------------
+
+Running the examples in Unix/Linux
+----------------------------------
+
+Preparation
+
+* Install SystemC and SystemC AMS reference implementations for Unix
+* Define environment variable SYSTEMC_PATH that points to SystemC 
+  installation path
+* Define environment variable SYSTEMC_AMS_PATH that points to SystemC AMS
+  installation path
+* Define environment variable TARGET_ARCH that specifies the target architecture
+* Adapt compiler options in Makefile.defs
+
+Each example can be built and executed as follows
+
+* Build:      make
+* Simulate:   make sim
+* Clean:      make clean
+
+
+Running the examples in Windows
+-------------------------------
+
+Preparation
+
+* Install SystemC and SystemC AMS reference implementations for Windows
+* Define environment variable SYSTEMC_HOME that points to SystemC 
+  installation path
+* Define environment variable SYSTEMC_MSVC that defines the msvc directory name
+  used in the SystemC installation (e.g. msvc10)
+* Define environment variable SYSTEMC_AMS_HOME that points to SystemC AMS
+  installation path
+* Define environment variable SYSTEMC_AMS_MSVC that defines the msvc directory name
+  used in the SystemC AMS installation (e.g. msvc12)
+
+Each example can be built and executed as follows
+
+* Build:      start Visual Studio using the vcxproj file 
+              and select "Build Solution" (Ctrl+Shift+B)
+* Simulate:   select "Start without Debugging" (Ctrl+F5) 
+
+
+Questions and support
+---------------------
+
+https://forums.accellera.org/forum/13-systemc-ams-analogmixed-signal/
